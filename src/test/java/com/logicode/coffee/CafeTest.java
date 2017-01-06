@@ -1,20 +1,50 @@
 package com.logicode.coffee;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  * Created by jjenkins on 1/6/2017.
  */
 public class CafeTest {
 
-    @Before
-    public void setUp() throws Exception {
+    public static final int REQUIRED_MILK = CoffeeType.Espresso.getRequiredMilk();
+    public static final int REQUIRED_BEANS = CoffeeType.Espresso.getRequiredBeans();
+    public static final int NO_BEANS = 0;
+    public static final int EXPRESSO_BEANS = 7;
+
+    private Cafe cafe;
+    /**
+     * Runs at the beginning if the test class
+     * @throws Exception
+     */
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+
 
     }
 
+    /**
+     * Runs at the end of the test class
+     */
+    @AfterClass
+    public static void afterClass(){
+
+
+    }
+
+    /**
+     * Runs before all methods
+     * @throws Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        cafe = new Cafe();
+    }
+
+    /**
+     * Runs after all methods
+     * @throws Exception
+     */
     @After
     public void tearDown() throws Exception {
 
@@ -22,36 +52,27 @@ public class CafeTest {
 
 
     @Test
-    public void canBrewExpresso() throws Exception {
+    public void canBrewEspresso() throws Exception {
         //get a cafe object
-        Cafe cafe = new Cafe();
-
-        //add beans
-        cafe.restockBeans(7);
+        withBeans();
         //brew an expresso
         Coffee coffee = cafe.brew(CoffeeType.Espresso);
 
         //assert it is an expresso
         //no milk
         //we have enough coffee
-        Assert.assertEquals(CoffeeType.Espresso, coffee.getType());
-        Assert.assertEquals(0, coffee.getMilk());
-        Assert.assertEquals(7, coffee.getBeans());
-
-
+        Assert.assertEquals("Wrong coffee type",CoffeeType.Espresso, coffee.getType());
+        Assert.assertEquals("Wrong amount of milk", REQUIRED_MILK, coffee.getMilk());
+        Assert.assertEquals("Wrong number of beans", REQUIRED_BEANS, coffee.getBeans());
     }
-
     @Test
     public void brewingExpressoConsumesBeans() throws Exception {
         //get a cafe object
-        Cafe cafe = new Cafe();
-
-        //add beans
-        cafe.restockBeans(7);
+        withBeans();
         //brew an expresso
         Coffee coffee = cafe.brew(CoffeeType.Espresso);
         //test for no beans since we used them in expresso
-        Assert.assertEquals(0, cafe.getBeansInStock());
+        Assert.assertEquals("To many beans", NO_BEANS, cafe.getBeansInStock());
 
     }
 
@@ -59,8 +80,7 @@ public class CafeTest {
     //we everybit expect an exception to be thrown because we are not restocking the milk
     @Test(expected = IllegalStateException.class)
     public void latteRequireMilk() throws Exception {
-        Cafe cafe = new Cafe();
-        cafe.restockBeans(7);
+        withBeans();
 
         cafe.brew(CoffeeType.Latte);
     }
@@ -79,4 +99,17 @@ public class CafeTest {
     public void testGetMilkInStock() throws Exception {
 
     }
+
+    /**
+     * Utility method to restock beans
+     */
+    private void withBeans() {
+
+        //add beans
+        cafe.restockBeans(EXPRESSO_BEANS);
+
+    }
+
+
+
 }
