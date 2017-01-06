@@ -42,13 +42,27 @@ public class CafeTest {
     }
 
     @Test
-    public void testBrew1() throws Exception {
+    public void brewingExpressoConsumesBeans() throws Exception {
+        //get a cafe object
+        Cafe cafe = new Cafe();
+
+        //add beans
+        cafe.restockBeans(7);
+        //brew an expresso
+        Coffee coffee = cafe.brew(CoffeeType.Espresso);
+        //test for no beans since we used them in expresso
+        Assert.assertEquals(0, cafe.getBeansInStock());
 
     }
 
-    @Test
-    public void testRestockBeans() throws Exception {
+    //add the IllegalStateException.class to annotation so the test will pass if exception is thrown
+    //we everybit expect an exception to be thrown because we are not restocking the milk
+    @Test(expected = IllegalStateException.class)
+    public void latteRequireMilk() throws Exception {
+        Cafe cafe = new Cafe();
+        cafe.restockBeans(7);
 
+        cafe.brew(CoffeeType.Latte);
     }
 
     @Test
